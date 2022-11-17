@@ -11,7 +11,29 @@
 		6FA59A0C2925F58D00F03557 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA59A0B2925F58D00F03557 /* ContentView.swift */; };
 		6FA59A0E2925F58E00F03557 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FA59A0D2925F58E00F03557 /* Assets.xcassets */; };
 		6FA59A112925F58E00F03557 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FA59A102925F58E00F03557 /* Preview Assets.xcassets */; };
+		6FA59A1A2925FAA400F03557 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA59A192925FAA400F03557 /* MainView.swift */; };
+		6FA59A1C2925FE1600F03557 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA59A1B2925FE1600F03557 /* LibraryView.swift */; };
+		6FA59A1F2926018B00F03557 /* ParserXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA59A1E2926018B00F03557 /* ParserXML.swift */; };
+		6FA59A222926023700F03557 /* SwiftyXMLParser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FA59A212926023700F03557 /* SwiftyXMLParser.framework */; };
+		6FA59A232926023700F03557 /* SwiftyXMLParser.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FA59A212926023700F03557 /* SwiftyXMLParser.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6FA59A26292663FD00F03557 /* LaunchDataCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA59A25292663FD00F03557 /* LaunchDataCheck.swift */; };
+		6FA59A2829266F7100F03557 /* ReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA59A2729266F7100F03557 /* ReaderView.swift */; };
+		6FA59A2E29269B1000F03557 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA59A2D29269B1000F03557 /* Settings.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6FA59A242926023700F03557 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6FA59A232926023700F03557 /* SwiftyXMLParser.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6FA59A062925F58D00F03557 /* Shuffle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shuffle.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -20,6 +42,13 @@
 		6FA59A0D2925F58E00F03557 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6FA59A102925F58E00F03557 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6FA59A122925F58E00F03557 /* Shuffle.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Shuffle.entitlements; sourceTree = "<group>"; };
+		6FA59A192925FAA400F03557 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		6FA59A1B2925FE1600F03557 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		6FA59A1E2926018B00F03557 /* ParserXML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserXML.swift; sourceTree = "<group>"; };
+		6FA59A212926023700F03557 /* SwiftyXMLParser.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyXMLParser.framework; path = Carthage/Build/Mac/SwiftyXMLParser.framework; sourceTree = "<group>"; };
+		6FA59A25292663FD00F03557 /* LaunchDataCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchDataCheck.swift; sourceTree = "<group>"; };
+		6FA59A2729266F7100F03557 /* ReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderView.swift; sourceTree = "<group>"; };
+		6FA59A2D29269B1000F03557 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FA59A222926023700F03557 /* SwiftyXMLParser.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +68,7 @@
 			children = (
 				6FA59A082925F58D00F03557 /* Shuffle */,
 				6FA59A072925F58D00F03557 /* Products */,
+				6FA59A202926023700F03557 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -52,8 +83,10 @@
 		6FA59A082925F58D00F03557 /* Shuffle */ = {
 			isa = PBXGroup;
 			children = (
+				6FA59A1D2926014700F03557 /* Manager */,
 				6FA59A092925F58D00F03557 /* ShuffleApp.swift */,
 				6FA59A0B2925F58D00F03557 /* ContentView.swift */,
+				6FA59A182925FA8A00F03557 /* View */,
 				6FA59A0D2925F58E00F03557 /* Assets.xcassets */,
 				6FA59A122925F58E00F03557 /* Shuffle.entitlements */,
 				6FA59A0F2925F58E00F03557 /* Preview Content */,
@@ -69,6 +102,34 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		6FA59A182925FA8A00F03557 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				6FA59A192925FAA400F03557 /* MainView.swift */,
+				6FA59A1B2925FE1600F03557 /* LibraryView.swift */,
+				6FA59A2729266F7100F03557 /* ReaderView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		6FA59A1D2926014700F03557 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				6FA59A25292663FD00F03557 /* LaunchDataCheck.swift */,
+				6FA59A1E2926018B00F03557 /* ParserXML.swift */,
+				6FA59A2D29269B1000F03557 /* Settings.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		6FA59A202926023700F03557 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6FA59A212926023700F03557 /* SwiftyXMLParser.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -79,6 +140,7 @@
 				6FA59A022925F58D00F03557 /* Sources */,
 				6FA59A032925F58D00F03557 /* Frameworks */,
 				6FA59A042925F58D00F03557 /* Resources */,
+				6FA59A242926023700F03557 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -139,7 +201,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FA59A1C2925FE1600F03557 /* LibraryView.swift in Sources */,
 				6FA59A0C2925F58D00F03557 /* ContentView.swift in Sources */,
+				6FA59A2E29269B1000F03557 /* Settings.swift in Sources */,
+				6FA59A1A2925FAA400F03557 /* MainView.swift in Sources */,
+				6FA59A2829266F7100F03557 /* ReaderView.swift in Sources */,
+				6FA59A26292663FD00F03557 /* LaunchDataCheck.swift in Sources */,
+				6FA59A1F2926018B00F03557 /* ParserXML.swift in Sources */,
 				6FA59A0A2925F58D00F03557 /* ShuffleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -271,6 +339,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Shuffle/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -296,6 +368,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Shuffle/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (

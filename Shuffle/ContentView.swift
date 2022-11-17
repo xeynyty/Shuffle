@@ -7,20 +7,62 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
+enum SidebarMenu: String, Hashable, CaseIterable {
+    
+    case main = "Main"
+    case library = "Library"
+    case reader = "Reader"
+    
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+struct ContentView: View {
+    
+    @ObservedObject var xml: ParserXML = ParserXML()
+    @ObservedObject var launch: LaunchCheck = LaunchCheck()
+    
+    @State private var selectedTab: SidebarMenu = .main
+    @State var selectedBook = Book()
+    
+    var body: some View {
+        
+        NavigationSplitView {
+            
+            List(SidebarMenu.allCases, id: \.self, selection: $selectedTab) { tab in
+                
+                NavigationLink(tab.rawValue, value: tab)
+                
+            }
+            .navigationSplitViewColumnWidth(150)
+            
+        } detail: {
+            
+            VStack {
+                switch selectedTab {
+                    
+                case .main:
+                    MainView()
+                    
+                case .library:
+                    LibraryView(xml: xml, selectedBook: $selectedBook, selectedTab: $selectedTab)
+                    
+                case .reader:
+                    ReaderView(xml: xml)
+                    
+                }
+            }
+            .navigationSplitViewColumnWidth(700)
+            
+        }
+        .frame(minWidth: 700, minHeight: 500)
+        .onAppear {
+            
+            xml.ParseListOfBooks()
+            launch.CreateDirectory()
+            
+        }
+
+        
     }
+    
+    
 }

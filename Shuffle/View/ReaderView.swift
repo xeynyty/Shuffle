@@ -8,63 +8,38 @@
 import SwiftUI
 
 struct ReaderView: View {
-    
+    // Require ParserXML class for parent
     @ObservedObject var xml: ParserXML
-    
+    // Good State var for goor view, UwU, we need it
     @State var target = 50
-    @State var start = 0
-    
     @State var oldHover = 0
-    
     @State var size = UserDefaults.standard.double(forKey: "textSize")
     @State var paddingSize = UserDefaults.standard.double(forKey: "padding")
     
-    var screen = NSScreen.main?.visibleFrame
-
     var body: some View {
         VStack {
             
             if xml.ReaderBook != Book() && xml.ReaderBook.text.count != 0 {
                 
                 ScrollViewReader { scroll in
-                    List(start..<(target), id: \.self) { i in
+                    List(0..<(target), id: \.self) { ID in
                         
                         HStack {
                             
                             Spacer()
                                 .frame(width: 50)
                             
-                            Text(xml.ReaderBook.text[i])
-                                .fontWeight(UserDefaults.standard.bool(forKey: "isBold") ? .bold : .regular)
-                                .font(.system(size: size))
-                                .onHover { hover in
-                                    
-                                    DispatchQueue.main.async {
-                                        if hover {
-                                            
-                                            size = UserDefaults.standard.double(forKey: "textSize")
-                                            
-                                            if oldHover < i {
-                                                
-                                                UserDefaults.standard.set(i, forKey: xml.ReaderBook.title)
-                                                oldHover = i
-                                                
-                                            }
-                                            
-                                            if target + 50 < xml.ReaderBook.text.count {
-                                                
-                                                self.target += 10
-                                                
-                                            } else {
-                                                
-                                                target = xml.ReaderBook.text.count - 1
-                                                
-                                            }
-                                            
-                                        }
-                                    }
-                                    
+                            HStack {
+                                Text(xml.ReaderBook.text[ID])
+                                    .fontWeight(UserDefaults.standard.bool(forKey: "isBold") ? .bold : .regular)
+                                    .font(.system(size: size))
+                                Spacer()
+                            }
+                            .onHover { hover in
+                                DispatchQueue.main.async {
+                                    if hover { CheckUploadData(ID) }
                                 }
+                            }
                             Spacer()
                                 .frame(width: 50)
                         }
@@ -83,7 +58,7 @@ struct ReaderView: View {
                             scroll.scrollTo(UserDefaults.standard.integer(forKey: xml.ReaderBook.title))
                         }
                         
-        
+                        
                     }
                     .navigationTitle(xml.ReaderBook.title)
                     .toolbar {
@@ -97,7 +72,7 @@ struct ReaderView: View {
                             Text("Go to last read")
                             
                         })
-
+                        
                         
                     }
                     
@@ -115,4 +90,29 @@ struct ReaderView: View {
             
         }
     }
+    
+    func CheckUploadData(_ hoverOn: Int) {
+        // Check for update oldHover data
+        if oldHover < hoverOn {
+            UserDefaults.standard.set(hoverOn, forKey: xml.ReaderBook.title)
+            oldHover = hoverOn
+        }
+        // If still have <25 text - upload new 100 with check
+        if target - hoverOn < 25 {
+            
+            if target + 100 < xml.ReaderBook.text.count {
+                
+                target += 100
+                
+            } else {
+                
+                target = xml.ReaderBook.text.count
+                
+            }
+            
+        }
+        
+        
+    }
+    
 }

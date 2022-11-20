@@ -19,76 +19,117 @@ struct MainView: View {
             
             Spacer()
             
-            Text("It's a welcome window in Shuffle!")
+            Text("It's a welcome screen in Shuffle!")
                 .font(.system(size: 30))
                 .font(.title)
                 .fontWeight(.ultraLight)
+                .padding(.bottom,10)
             
+            
+            
+            VStack {
+                // Add book button
+                Button(action: { openFile.toggle() }, label: {
+                    
+                    HStack {
+                        Text("\(Image(systemName: "plus.app"))")
+                            .font(.system(size: 20))
+                            .padding(.all, 15)
+                        Spacer()
+                        Text("ADD FB2 BOOK")
+                            .font(.system(size: 20))
+                            .fontWeight(.light)
+                            .padding(.all, 15)
+                        Spacer()
+                    }
+                    .background(Color.accentColor)
+                    .cornerRadius(5)
+                    
+                    
+                })
+                .buttonStyle(.plain)
+                .fileImporter(isPresented: $openFile, allowedContentTypes: [.data]) { res in
+                    do {
+                        
+                        let url = try res.get()
+                        
+                        let rawText = try Data(contentsOf: url)
+                        
+                        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+                            let fileURL = dir.appendingPathComponent("\(Date()).fb2")
+                            
+                            FileManager.default.createFile(atPath: "\(fileURL)", contents: nil)
+                            
+                            try rawText.write(to: fileURL)
+                            
+                            print("ADD \(url) -> \(fileURL)")
+                            
+                        }
+                        xml.ParseListOfBooks()
+                        
+                    }
+                    catch { print("error", error) }
+                    
+                }
+                
+                // Divider
+                HStack {
+                    
+                    Rectangle()
+                        .frame(height: 1)
+                    
+                    Text("OR")
+                    
+                    Rectangle()
+                        .frame(height: 1)
+                    
+                }
+                .foregroundColor(.gray)
+                
+                // Open folder button
+                Button(action: {
+                    
+                    if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+                        NSWorkspace.shared.open(dir)
+                    }
+                    
+                }, label: {
+                    
+                    HStack {
+                        Text("\(Image(systemName: "folder.fill"))")
+                            .font(.system(size: 20))
+                            .padding(.all, 15)
+                        Spacer()
+                        Text("OPEN APP FOLDER")
+                            .font(.system(size: 20))
+                            .fontWeight(.light)
+                            .padding(.all, 15)
+                        Spacer()
+                    }
+                    .background(Color.accentColor)
+                    .cornerRadius(5)
+                    
+                })
+                .buttonStyle(.plain)
+
+            }
+            .frame(width: 350)
+            
+            Spacer()
+            
+            // Footer git url and version
             HStack {
-                Text("Alpha")
+                Link("github.com/xeynyty", destination: URL(string: "https://github.com/xeynyty")!)
+                    .padding()
                     .font(.system(size: 15))
                     .font(.callout)
-                    .fontWeight(.bold)
-                Text("version 0.1 from 18/11/2022")
+                    .fontWeight(.ultraLight)
+                
+                Text("Alpha version 0.2 from 20/11/2022")
                     .font(.system(size: 15))
                     .font(.callout)
                     .fontWeight(.ultraLight)
             }
-            
-            Button(action: { openFile.toggle() }, label: {
-                
-                Text("\(Image(systemName: "plus.app")) Add FB2 book")
-                    .padding(.all, 15)
-                    .font(.system(size: 20))
-                    .fontWeight(.light)
-                
-                
-            })
-            .containerShape(Rectangle())
-            .buttonStyle(.plain)
-            .background(.blue)
-            .cornerRadius(5)
-            .fileImporter(isPresented: $openFile, allowedContentTypes: [.data]) { res in
-                do {
-                    
-                    let url = try res.get()
-                    
-                    let rawText = try Data(contentsOf: url)
-                    
-                    if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-                        let fileURL = dir.appendingPathComponent("Shuffle/\(Date()).fb2")
-                        
-                        FileManager.default.createFile(atPath: "\(fileURL)", contents: nil)
-                        
-                        try rawText.write(to: fileURL)
-                        
-                        print("ADD \(url) -> \(fileURL)")
-                        
-                    }
-                    xml.ParseListOfBooks()
-                    
-                }
-                catch { print("error", error) }
-                
-            }
-            
-            Spacer()
-            
-            Link("github.com/xeynyty", destination: URL(string: "https://github.com/xeynyty")!)
-                .padding()
-                .font(.system(size: 15))
-                .font(.callout)
-                .fontWeight(.ultraLight)
-                
         }
-    }
-}
-
-extension String {
-    func substring(from left: String, to right: String) -> String {
-        if let match = range(of: "(?<=\(left))[^\(right)]+", options: .regularExpression) {
-            return String(self[match])
-        }
-        return ""
     }
 }

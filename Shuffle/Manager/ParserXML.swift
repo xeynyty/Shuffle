@@ -8,43 +8,91 @@
 import Foundation
 import SwiftyXMLParser
 
+// Book struct
 struct Book: Hashable {
     
+    var fileName: String = ""
     var title: String = ""
     var genre: String = ""
     var text: Array<String> = []
+    var image: Data = Data()
     
 }
 
+// Type of parse data in FB2
+enum parsedTypeData: Hashable, Encodable {
+    
+    case title
+    case genre
+    case text
+    case image
+    case all
+    
+}
+
+// Main Parser class
 class ParserXML: ObservableObject {
     
-    @Published var ListOfBook: [Book] = [Book(title: "", genre: "", text: [])]
+    @Published var BookList: [Book] = []
     @Published var ReaderBook: Book = Book()
-    @Published var TargetTextArray: [String] = []
     
-    func ParseTitleAndGenre(_ path: String) {
+    // Parse data func, best func
+    func parseDataFromFB2(fileName: String, dataType: [parsedTypeData], listID: Int) {
         
-        var output = Book()
+        let queue = DispatchQueue.main
         
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .userInteractive).async {
+            
+            
             do {
-                
                 if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-                    let fileURL = dir.appendingPathComponent("Shuffle/\(path)")
+                    let fileURL = dir.appendingPathComponent(fileName)
                     let rawText = try String(contentsOf: fileURL, encoding: .utf8)
                     
                     let xml = try! XML.parse(rawText)
                     
-                    // title
-                    
-                    if let text = xml["FictionBook", "description", "title-info", "book-title"].text {
-                        output.title = text
+                    // File name
+                    queue.async {
+                        self.BookList[listID].fileName = fileName
                     }
                     
-                    // genre
+                    // Parse title
+                    if dataType.contains(.title) || dataType.contains(.all) {
+                        if let text = xml["FictionBook", "description", "title-info", "book-title"].text {
+                            queue.async {
+                                self.BookList[listID].title = text
+                            }
+                        }
+                    }
+                    // Parse genres
+                    if dataType.contains(.genre) || dataType.contains(.all) {
+                        if let text = xml["FictionBook", "description", "title-info", "genre"].text {
+                            queue.async {
+                                self.BookList[listID].genre = text
+                            }
+                        }
+                    }
                     
-                    if let text = xml["FictionBook", "description", "title-info", "genre"].text {
-                        output.genre = text
+                    // Parse image
+                    if dataType.contains(.image) || dataType.contains(.all) {
+                        
+                        if let text = xml["FictionBook", "binary"].text {
+                            
+                            if text != "" {
+                                queue.async {
+                                    self.BookList[listID].image = Data(base64Encoded: text)!
+                                }
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                    // Parse text
+                    if dataType.contains(.text) || dataType.contains(.all) {
+                        
+                        self.ParseText(fileName, listID)
+                        
                     }
                     
                 }
@@ -56,60 +104,26 @@ class ParserXML: ObservableObject {
         
     }
     
+    // Parse all books in /Documents/...
     func ParseListOfBooks() {
         
-        var tempArray: [Book] = []
-        
         let documentDirectoryPath:String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
-        let myFilesPath = "\(documentDirectoryPath)/Shuffle/"
         let filemanager = FileManager.default
-        let files = filemanager.enumerator(atPath: myFilesPath)
+        let files = filemanager.enumerator(atPath: documentDirectoryPath)
         
         while let file = files?.nextObject() {
             
             if "\(file)".contains(".fb2") {
                 
-                DispatchQueue.main.async {
-                    
-                    var temp = Book()
-                    
-                    do {
-                        
-                        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-                            let fileURL = dir.appendingPathComponent("Shuffle/\(file)")
-                            let rawText = try String(contentsOf: fileURL, encoding: .utf8)
-                            
-                            let xml = try! XML.parse(rawText)
-                            
-                            // title
-                            
-                            if let text = xml["FictionBook", "description", "title-info", "book-title"].text {
-                                temp.title = text
-                            }
-                            
-                            // genre
-                            
-                            if let text = xml["FictionBook", "description", "title-info", "genre"].text {
-                                temp.genre = text
-                            }
-                            // text
-                            
-                            self.ParseText("\(file)", tempArray.count)
-                            
-                        }
-                        tempArray.append(temp)
-                        //print("Append", temp)
-                        
-                    }
-                    catch { print("error", error) }
-                    
-                    DispatchQueue.main.async {
-                            
-                        self.ListOfBook = tempArray
-                        
-                    }
-                    
-                }
+                // Create new array item for new book
+                self.BookList.append(Book())
+                
+                // Parse new book in created array item
+                self.parseDataFromFB2(
+                    fileName: file as! String,
+                    dataType: [.all],
+                    listID: self.BookList.count - 1
+                )
                 
             }
             
@@ -117,15 +131,14 @@ class ParserXML: ObservableObject {
         
     }
     
+    // Func for parsing text from FB2
     func ParseText(_ file: String, _ id: Int) {
         var tempOutputText: [String] = []
         
-        let queue = DispatchQueue.global(qos: .background)
-        
-        queue.async {
+        DispatchQueue.global(qos: .default).async {
             do {
                 if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-                    let fileURL = dir.appendingPathComponent("Shuffle/\(file)")
+                    let fileURL = dir.appendingPathComponent(file)
                     let rawText = try String(contentsOf: fileURL, encoding: .utf8)
                     
                     let xml = try! XML.parse(rawText)
@@ -135,19 +148,19 @@ class ParserXML: ObservableObject {
                     let numHit = xml.FictionBook.body.all?.count
                     for i in 0...(numHit ?? 0) {
                         for _ in xml["FictionBook", "body", i] {
-                           // print("Body: ",hit)
+                            // print("Body: ",hit)
                             
                             //MARK: - Body -> Selection
                             let numJit = xml.FictionBook.body[i].section.all?.count
                             for j in 0...(numJit ?? 0) {
                                 for _ in xml["FictionBook", "body", i, "section", j] {
-                                   // print("Body -> Selection: ", jit )
+                                    // print("Body -> Selection: ", jit )
                                     
                                     // MARK: - Selections -> P
                                     let numPit2 = xml.FictionBook.body[i].section[j].all?.count
                                     for _ in 0...(numPit2 ?? 0) {
                                         for pit in xml["FictionBook", "body", i, "section", j, "p"] {
-                                          //  print("Selections -> P: ", jit )
+                                            //  print("Selections -> P: ", jit )
                                             if (pit.text ?? "").count > 3 {
                                                 tempOutputText.append(pit.text ?? "error")
                                             }
@@ -179,42 +192,20 @@ class ParserXML: ObservableObject {
                     
                     DispatchQueue.main.async {
                         
-                        self.ListOfBook[id].text = tempOutputText
-                        print("Added text: ", tempOutputText.count, " to ", self.ListOfBook[id].title)
+                        self.BookList[id].text = tempOutputText
+                        print("Added text: ", tempOutputText.count, " to ", self.BookList[id].title)
                         
                         tempOutputText = []
                         
                     }
                 }
-
-            
+                
+                
                 
             }
             catch { print("error", error) }
         }
-
-    }
-    
-    func TargetString(_ target: Int) {
         
-        //let max = 100
-        
-        print("Text count: ", self.ReaderBook.text.count)
-        
-
-        
-        if target > 30 {
-            
-            let array = self.ReaderBook.text[(target-50)...(target+100)]
-            
-            self.TargetTextArray.append(contentsOf: array)
-        } else {
-            
-            let array = self.ReaderBook.text[(target)...(target+140)]
-            
-            self.TargetTextArray.append(contentsOf: array)
-            
-        }
     }
     
 }
